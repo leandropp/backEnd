@@ -1,0 +1,36 @@
+Arguments: 
+  /usr/bin/node /usr/share/yarn/bin/yarn.js init
+
+PATH: 
+  /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/home/paixao/Android/Sdk/emulator:/home/paixao/Android/Sdk/tools:/home/paixao/Android/Sdk/tools/bin:/home/paixao/Android/Sdk/platform-tools:/home/paixao/android-studio/bin
+
+Yarn version: 
+  1.22.5
+
+Node version: 
+  12.18.3
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: canceled
+      at Interface.<anonymous> (/usr/share/yarn/lib/cli.js:137009:13)
+      at Interface.emit (events.js:315:20)
+      at Interface._ttyWrite (readline.js:868:16)
+      at ReadStream.onkeypress (readline.js:205:10)
+      at ReadStream.emit (events.js:315:20)
+      at emitKeys (internal/readline/utils.js:335:14)
+      at emitKeys.next (<anonymous>)
+      at ReadStream.onData (readline.js:1137:36)
+      at ReadStream.emit (events.js:315:20)
+      at addChunk (_stream_readable.js:295:12)
+
+npm manifest: 
+  No manifest
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
