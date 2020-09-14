@@ -14,7 +14,10 @@ function logRequests (request, response, next) {
     console.log(logLabel);
 
     return next();
+
 }
+
+app.use(logRequests);
 
 app.get('/projects', (request, response) => {
     const { title } = request.query;
