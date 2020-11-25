@@ -1,79 +1,110 @@
 import express from 'express';
-import { uuid } from 'uuidv4';
+import { uuid, isUuid } from 'uuidv4';
 
 const app = express();
 
 app.use(express.json());
 
-const projects = [];
+const repositories = [];
 
-function logRequests (request, response, next) {
-    const { method, url } = request;
+function validateRepositoryId (request, response, next) {
+    const { id } = request.params;
 
-    const logLabel = `[${method.toUpperCase()}] ${url}`;
-    console.log(logLabel);
+    if (!isUuid(id)) {
+        return response
+            .status(400)
+            .json({ error: 'Invalid repository ID.'});
+    }
 
     return next();
 
 }
 
-app.use(logRequests);
+app.use('/repositories/:id', validateRepositoryId);
 
-app.get('/projects', (request, response) => {
-    const { title } = request.query;
-
-    const results = title
-        ? projects.filter(project => project.title.includes(title))
-        : projects;
-
-    return response.json(results);
+app.get('/repositories', (request, response) => {
+    return response.json(repositories);
 });
 
-app.post('/projects', (request, response) => {
-    const { title, owner } = request.query;
+app.post('/repositories', (request, response) => {
+    const { title, url, techs } = request.body;
     
-    const project = { id: uuid(), title, owner };
-    projects.push(project);
+    const newRepo = {
+        id: uuid(),
+        title,
+        url,
+        techs,
+        likes: 0,
+    };
+    repositories.push(newRepo);
 
-    return response.json(project);
+    return response.json(newRepo);
 });
 
 app.put('/projects/:id', (request, response) => {
     const { id } = request.params;
-    const { title, owner } = request.body;
+    const { title, url, techs } = request.body;
     
-    const projectIndex = projects.findIndex( project => project.id === id);
+    const repositoryIndex = repositories.findIndex( repository => repository.id === id);
 
-    if (projectIndex < 0) {
+    if (repositoryIndex < 0) {
         return response
             .status(400)
-            .json({ error: 'Project not found.'});
+            .json({ error: 'Repository not found.'});
     }
 
-    const project = {
+    const repostitory = {
         id,
         title,
-        owner
+        url,
+        techs,
     }
 
-    projects[projectIndex] = project;
+    reposytories[repositoryIndex] = repostitory;
 
-    return response.json(project);
+    return response.json(repostitory);
 });
 
 app.delete('/projects/:id', (request, response) => {
     const { id } = request.params;
     
-    const projectIndex = projects.findIndex( project => project.id === id);
+    const repositoryIndex = repositories.findIndex( repository => repository.id === id);
 
-    if (projectIndex < 0) {
+    if (repositoryIndex < 0) {
         return response
             .status(400)
-            .json({ error: 'Project not found.'});
+            .json({ error: 'Repository not found.'});
     }
 
-    projects.splice(projectIndex, 1);
+    repositories.splice(repositoryIndex, 1);
     return response
         .status(204)
         .send();
+});
+
+app.post('/repositories/:id/like', (request, response) => {
+    const { id } = request.params;
+    
+    const repositoryIndex = repositories.findIndex( repository => repository.id === id);
+
+    if (repositoryIndex < 0) {
+        return response
+            .status(400)
+            .json({ error: 'Repository not found.'});
+    }
+
+    const { title, url, techs, likes } = repositories[repositoryIndex];
+    
+
+    const repostitory = {
+        id,
+        title,
+        url,
+        techs,
+        likes: likes + 1,
+    }
+
+    reposytories[repositoryIndex] = repostitory;
+
+    return response.json(repostitory);
 });
